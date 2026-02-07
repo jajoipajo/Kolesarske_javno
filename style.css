@@ -4,41 +4,182 @@
   --text:#1f2937;
   --muted:#6b7280;
   --border:rgba(17,24,39,.10);
-  --shadow:0 10px 30px rgba(17,24,39,.08);
+  --shadow:0 10px 28px rgba(17,24,39,.08);
   --link:#1d4ed8;
   --linkHover:#1e40af;
   --accent:#0ea5a4;
+  --accent2:#f59e0b;
   --codeBg:#f3f4f6;
+  --topbarBg:rgba(251,248,242,.75);
+  --topbarBorder:rgba(17,24,39,.08);
+  --focus:rgba(14,165,164,.35);
+}
+
+[data-theme="dark"]{
+  --bg:#0c1117;
+  --panel:#0f1621;
+  --text:#e6edf3;
+  --muted:#9aa4b2;
+  --border:rgba(255,255,255,.10);
+  --shadow:0 18px 40px rgba(0,0,0,.35);
+  --link:#7cb7ff;
+  --linkHover:#a5ceff;
+  --accent:#34d399;
+  --accent2:#fbbf24;
+  --codeBg:rgba(255,255,255,.06);
+  --topbarBg:rgba(12,17,23,.65);
+  --topbarBorder:rgba(255,255,255,.10);
+  --focus:rgba(52,211,153,.35);
 }
 
 html,body{
   margin:0;
   padding:0;
   background:
-    radial-gradient(900px 500px at 10% 0%, rgba(14,165,164,.14), transparent 55%),
-    radial-gradient(900px 500px at 90% 0%, rgba(29,78,216,.10), transparent 60%),
+    radial-gradient(900px 520px at 12% -10%, rgba(14,165,164,.14), transparent 60%),
+    radial-gradient(900px 520px at 88% -10%, rgba(29,78,216,.10), transparent 60%),
     var(--bg);
   color:var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
+  scroll-behavior:smooth;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.10;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+  background-size:180px 180px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  backdrop-filter: blur(10px);
+  background: var(--topbarBg);
+  border-bottom:1px solid var(--topbarBorder);
+}
+
+.topbar-inner{
+  max-width: 1020px;
+  margin:0 auto;
+  padding: 10px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+
+.brand-dot{
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  background: linear-gradient(90deg, var(--accent), rgba(29,78,216,.65));
+  box-shadow:0 0 0 4px rgba(14,165,164,.10);
+}
+
+.brand-title{
+  font-weight:650;
+  letter-spacing:-0.01em;
+  font-size:14.5px;
+  color:var(--text);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.toggle{
+  appearance:none;
+  border:1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius:999px;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  cursor:pointer;
+  box-shadow: 0 6px 14px rgba(17,24,39,.06);
+}
+
+.toggle:focus{
+  outline:none;
+  box-shadow: 0 0 0 4px var(--focus), 0 6px 14px rgba(17,24,39,.06);
 }
 
 .page{
-  max-width: 980px;
+  max-width: 1020px;
   margin: 0 auto;
-  padding: 40px 18px 56px;
+  padding: 22px 16px 56px;
 }
 
 .markdown-body{
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-  padding: 34px 32px;
+  max-width: 860px;
+  margin: 0;
+  background: transparent;
   color: var(--text);
-  line-height: 1.75;
+  line-height: 1.8;
   font-size: 16.5px;
+}
+
+.markdown-body > :first-child{
+  margin-top: 0;
+}
+
+.markdown-body h1{
+  font-size: 2.25rem;
+  line-height: 1.12;
+  margin: 12px 0 0.65rem 0;
+  letter-spacing:-0.02em;
+}
+
+.markdown-body h1 + p{
+  color: var(--muted);
+  font-size: 1.03rem;
+  margin-top: 0.6rem;
+  max-width: 70ch;
+}
+
+.markdown-body h2{
+  font-size: 1.55rem;
+  line-height: 1.2;
+  margin: 2.2rem 0 0.8rem;
+  letter-spacing:-0.01em;
+}
+
+.markdown-body h2::after{
+  content:"";
+  display:block;
+  height:3px;
+  width:72px;
+  margin-top:10px;
+  border-radius:999px;
+  background: linear-gradient(90deg, rgba(14,165,164,.65), rgba(29,78,216,.35));
+}
+
+.markdown-body h3{
+  font-size: 1.18rem;
+  margin: 1.6rem 0 0.5rem;
+}
+
+.markdown-body p{
+  margin: 0.85rem 0;
+  max-width: 78ch;
 }
 
 .markdown-body a{
@@ -52,57 +193,18 @@ html,body{
   text-decoration: underline;
 }
 
-.markdown-body h1{
-  font-size: 2.15rem;
-  line-height: 1.15;
-  margin: 0 0 0.9rem 0;
-  letter-spacing: -0.02em;
-}
-
-.markdown-body h1 + p{
-  color: var(--muted);
-  font-size: 1.02rem;
-  margin-top: 0.6rem;
-}
-
-.markdown-body h2{
-  font-size: 1.55rem;
-  line-height: 1.2;
-  margin: 2.1rem 0 0.9rem;
-  padding-top: 0.2rem;
-  letter-spacing: -0.01em;
-}
-
-.markdown-body h2::after{
-  content:"";
-  display:block;
-  height:3px;
-  width:72px;
-  margin-top:10px;
-  border-radius:999px;
-  background: linear-gradient(90deg, rgba(14,165,164,.55), rgba(29,78,216,.35));
-}
-
-.markdown-body h3{
-  font-size: 1.2rem;
-  margin: 1.6rem 0 0.6rem;
-}
-
-.markdown-body p{
-  margin: 0.85rem 0;
-}
-
 .markdown-body hr{
-  border: none;
-  height: 1px;
+  border:none;
+  height:1px;
   background: var(--border);
-  margin: 1.8rem 0;
+  margin: 1.7rem 0;
 }
 
 .markdown-body ul,
 .markdown-body ol{
   padding-left: 1.25rem;
   margin: 0.9rem 0;
+  max-width: 78ch;
 }
 
 .markdown-body li{
@@ -115,35 +217,41 @@ html,body{
 
 .markdown-body blockquote{
   margin: 1.2rem 0;
-  padding: 0.9rem 1.05rem;
+  padding: 0.95rem 1.05rem;
   border-left: 4px solid rgba(14,165,164,.55);
-  background: rgba(14,165,164,.07);
+  background: rgba(14,165,164,.08);
   color: var(--muted);
-  border-radius: 10px;
+  border-radius: 12px;
+  max-width: 78ch;
 }
 
 .markdown-body pre{
   background: var(--codeBg);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 14px 16px;
-  overflow: auto;
+  overflow:auto;
   line-height: 1.55;
+  max-width: 100%;
 }
 
 .markdown-body code{
   background: rgba(243,244,246,.85);
   border: 1px solid rgba(17,24,39,.08);
-  border-radius: 9px;
+  border-radius: 10px;
   padding: 0.18em 0.38em;
   font-size: 0.95em;
+}
+
+[data-theme="dark"] .markdown-body code{
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.12);
 }
 
 .markdown-body pre code{
   background: transparent;
   border: 0;
   padding: 0;
-  font-size: 0.95em;
 }
 
 .markdown-body table{
@@ -152,7 +260,8 @@ html,body{
   border-spacing: 0;
   overflow: hidden;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
+  background: var(--panel);
 }
 
 .markdown-body th,
@@ -167,7 +276,7 @@ html,body{
 
 .markdown-body thead th{
   background: rgba(29,78,216,.06);
-  font-weight: 600;
+  font-weight: 650;
 }
 
 .loading{
@@ -175,19 +284,18 @@ html,body{
   font-style: italic;
 }
 
-@media (max-width: 680px){
-  .page{
-    padding: 24px 14px 40px;
-  }
-  .markdown-body{
-    padding: 22px 18px;
-    border-radius: 16px;
-    font-size: 16px;
-  }
-  .markdown-body h1{
-    font-size: 1.75rem;
-  }
-  .markdown-body h2{
-    font-size: 1.35rem;
-  }
+.card{
+  max-width: 920px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 22px 20px;
+}
+
+@media (max-width: 760px){
+  .page{ padding: 18px 14px 42px; }
+  .markdown-body{ font-size: 16px; }
+  .markdown-body h1{ font-size: 1.85rem; }
+  .markdown-body h2{ font-size: 1.35rem; }
 }
