@@ -1,50 +1,95 @@
-:root {
-  --bg: #0e1116;
-  --fg: #e6edf3;
-  --muted: #9aa4b2;
-  --border: #30363d;
-  --link: #58a6ff;
+:root{
+  --bg:#0b0f14;
+  --panel:#0f1621;
+  --border:rgba(255,255,255,.08);
+  --text:#e6edf3;
+  --muted:#9aa4b2;
+  --link:#58a6ff;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, Helvetica, Arial, sans-serif;
+html,body{
+  margin:0;
+  background:
+    radial-gradient(900px 500px at 20% 0%, rgba(88,166,255,.10), transparent 55%),
+    radial-gradient(900px 500px at 80% 0%, rgba(163,113,247,.10), transparent 55%),
+    var(--bg);
+  color:var(--text);
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
 
-.page {
+.page{
   max-width: 980px;
   margin: 0 auto;
-  padding: 2.5rem 1.5rem;
+  padding: 32px 16px;
 }
 
-.loading {
-  color: var(--muted);
-  font-style: italic;
-}
-
-/* Markdown overrides */
-.markdown-body {
-  background: transparent;
-  color: var(--fg);
-}
-
-.markdown-body a {
-  color: var(--link);
-}
-
-.markdown-body hr {
-  border-color: var(--border);
-}
-
-.markdown-body pre {
-  background: #161b22;
+.markdown-body{
+  background: var(--panel);
   border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 26px;
+  color: var(--text);
+  line-height: 1.65;
 }
 
-.markdown-body code {
-  background: #161b22;
+/* Linki */
+.markdown-body a{ color: var(--link); }
+
+/* Naslovi: manjši, bolj umirjeni */
+.markdown-body h1{
+  font-size: 2.0rem;
+  margin: 0 0 0.8rem 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.7rem;
+}
+.markdown-body h2{
+  font-size: 1.5rem;
+  margin-top: 2.0rem;
+  padding-top: 0.2rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.6rem;
+}
+.markdown-body h3{
+  font-size: 1.2rem;
+  margin-top: 1.6rem;
+}
+
+/* Tekst */
+.markdown-body p{
+  color: var(--text);
+  margin: 0.8rem 0;
+}
+.markdown-body li{ margin: 0.35rem 0; }
+.markdown-body .loading{ color: var(--muted); font-style: italic; }
+
+/* Dividerji */
+.markdown-body hr{ border-color: var(--border); margin: 1.5rem 0; }
+
+/* Code */
+.markdown-body pre{
+  background: rgba(0,0,0,.22);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  overflow:auto;
+}
+.markdown-body code{
+  background: rgba(0,0,0,.22);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.15em 0.35em;
+}
+
+/* Citati */
+.markdown-body blockquote{
+  border-left: 4px solid rgba(88,166,255,.35);
+  color: var(--muted);
+  padding-left: 1rem;
+}
+
+/* Na mobilcu manj paddinga */
+@media (max-width: 520px){
+  .markdown-body{ padding: 18px 16px; }
+  .markdown-body h1{ font-size: 1.7rem; }
+  .markdown-body h2{ font-size: 1.35rem; }
 }
