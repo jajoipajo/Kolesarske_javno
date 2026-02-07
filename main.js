@@ -1,4 +1,4 @@
-function getStoredTheme() {
+﻿function getStoredTheme() {
   return localStorage.getItem("theme");
 }
 
@@ -6,7 +6,12 @@ function setTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
   const btn = document.getElementById("themeToggle");
-  if (btn) btn.textContent = theme === "dark" ? "Dark" : "Light";
+  if (btn) {
+    btn.classList.toggle("theme-toggle--toggled", theme === "dark");
+    btn.setAttribute("aria-pressed", theme === "dark");
+    btn.setAttribute("aria-label", theme === "dark" ? "Preklopi na svetlo temo" : "Preklopi na temno temo");
+    btn.setAttribute("title", theme === "dark" ? "Preklopi na svetlo temo" : "Preklopi na temno temo");
+  }
 }
 
 function initTheme() {
@@ -15,7 +20,64 @@ function initTheme() {
     setTheme(stored);
     return;
   }
-  setTheme("light");
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  setTheme(prefersDark ? "dark" : "light");
+}
+
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}+/gu, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\p{L}\p{N}-]+/gu, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function buildToc() {
+  const container = document.getElementById("content");
+  const toc = document.getElementById("tocList");
+  if (!container || !toc) return;
+
+  toc.innerHTML = "";
+  const headings = Array.from(container.querySelectorAll("h1, h2, h3"));
+  headings.forEach((heading) => {
+    if (!heading.id) {
+      const base = slugify(heading.textContent || "");
+      let id = base || "section";
+      let i = 1;
+      while (document.getElementById(id)) {
+        id = `${base}-${i}`;
+        i += 1;
+      }
+      heading.id = id;
+    }
+
+    const link = document.createElement("a");
+    link.href = `#${heading.id}`;
+    link.textContent = heading.textContent || "";
+    link.dataset.level = heading.tagName.replace("H", "");
+    toc.appendChild(link);
+  });
+
+  if (headings.length === 0) {
+    toc.innerHTML = "<span class=\"toc-empty\">Ni naslovov</span>";
+  }
+}
+
+function initTocToggle() {
+  const btn = document.getElementById("tocToggle");
+  const toc = document.getElementById("tocList");
+  if (!btn || !toc) return;
+
+  btn.addEventListener("click", () => {
+    const isOpen = toc.classList.toggle("is-open");
+    btn.setAttribute("aria-expanded", isOpen);
+    btn.textContent = isOpen ? "Skrij" : "Prikaži";
+    toc.setAttribute("aria-hidden", (!isOpen).toString());
+  });
 }
 
 async function loadReadme() {
@@ -34,6 +96,7 @@ async function loadReadme() {
     });
 
     container.innerHTML = marked.parse(markdown);
+    buildToc();
   } catch (err) {
     container.innerHTML = `
       <h1>Napaka</h1>
@@ -56,4 +119,5 @@ function initToggle() {
 
 initTheme();
 initToggle();
+initTocToggle();
 loadReadme();
