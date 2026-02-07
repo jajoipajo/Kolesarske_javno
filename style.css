@@ -1,0 +1,50 @@
+:root {
+  --bg: #0e1116;
+  --fg: #e6edf3;
+  --muted: #9aa4b2;
+  --border: #30363d;
+  --link: #58a6ff;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+}
+
+.page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.loading {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Markdown overrides */
+.markdown-body {
+  background: transparent;
+  color: var(--fg);
+}
+
+.markdown-body a {
+  color: var(--link);
+}
+
+.markdown-body hr {
+  border-color: var(--border);
+}
+
+.markdown-body pre {
+  background: #161b22;
+  border: 1px solid var(--border);
+}
+
+.markdown-body code {
+  background: #161b22;
+}
