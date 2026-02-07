@@ -21,7 +21,7 @@ Test commit
 	-	Aplikacijo odpremo in dovolimo dostop do vseh senzorjev.
 -	Odpremo aplikacijo phyphox, klikemo + -> Add experiment from QR code -> skeniramo kodo -> Save to collection. Shranili smo prednastavljen eksperiment imenovan kolesarske_meritve.
 
- 	 ![QR koda eksperimenta](slike/Kolesarske3_QR.png)
+![QR koda eksperimenta](slike/Kolesarske3_QR.png)
   
 -	Na krmilo kolesa namestimo držalo za telefon, kot kaže slika. Preverimo, da je držalo na krmilo kolesa pritrjeno **vodoravno** – da je vzporedno s tlemi. To storimo tako, da na telefonu zaženemo aplikacijo, ki to omogoča (npr. [iOS - Measure](https://apps.apple.com/us/app/measure/id1383426740), [Android - Bubble level](https://play.google.com/store/apps/details?id=net.androgames.level), [F-Droid - Bubble](https://f-droid.org/packages/org.woheller69.level/)) in držalo nastavimo ustrezno (glej sliko x). 
 -	Preverimo tlak v obeh zračnicah kolesa. Tlak naj ustreza vrednostim označenim na plaščih. Obe zračnici naj imata enak tlak.  
