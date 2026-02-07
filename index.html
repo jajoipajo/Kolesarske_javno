@@ -3,62 +3,25 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Projekt</title>
+  <title>Kolesarske – merjenje kakovosti kolesarskih površin</title>
 
-  <!-- GitHub-like styling -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.6.1/github-markdown.min.css">
+  <link rel="stylesheet" href="style.css" />
 
-  <style>
-    body { margin: 0; padding: 0; }
-    .page {
-      box-sizing: border-box;
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 32px 20px;
-    }
-    /* Optional: nicer code blocks */
-    pre { overflow: auto; }
-  </style>
+  <!-- Markdown styling (GitHub-like) -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.6.1/github-markdown.min.css"
+  />
 </head>
 <body>
   <main class="page">
-    <article id="content" class="markdown-body"></article>
+    <article id="content" class="markdown-body">
+      <p class="loading">Nalaganje vsebine …</p>
+    </article>
   </main>
 
   <!-- Markdown parser -->
   <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-
-  <script>
-    async function loadReadme() {
-      const el = document.getElementById("content");
-
-      try {
-        const res = await fetch("./README.md", { cache: "no-store" });
-        if (!res.ok) throw new Error("Ne najdem README.md (status " + res.status + ")");
-
-        const md = await res.text();
-
-        // Marked options (optional)
-        marked.setOptions({
-          gfm: true,
-          breaks: false
-        });
-
-        el.innerHTML = marked.parse(md);
-
-        // Fix relative image paths if needed (optional)
-        // Example: if your images are in ./assets, Markdown "assets/img.png" works already.
-      } catch (err) {
-        el.innerHTML = `
-          <h1>Napaka</h1>
-          <p>${err.message}</p>
-          <p>Preveri, da je <code>README.md</code> v isti mapi kot <code>index.html</code>.</p>
-        `;
-        console.error(err);
-      }
-    }
-
-    loadReadme();
-  </script>
+  <script src="main.js"></script>
 </body>
 </html>
