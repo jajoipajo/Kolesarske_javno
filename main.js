@@ -80,6 +80,34 @@ function initTocToggle() {
   });
 }
 
+function buildMapCard() {
+  const card = document.createElement("section");
+  card.className = "card map-card";
+  card.innerHTML = `
+    <div class="map-header">
+      <div>
+        <h2>Interaktivna karta</h2>
+        <p class="map-subtitle">Preklopi prikaz med različnimi indeksi.</p>
+      </div>
+      <div class="map-controls">
+        <label for="indexSelect">Indeks</label>
+        <select id="indexSelect"></select>
+      </div>
+    </div>
+    <div id="map" class="map" role="img" aria-label="Leaflet karta z merilnimi točkami"></div>
+    <div id="mapLegend" class="map-legend" aria-live="polite"></div>
+  `;
+  return card;
+}
+
+function mountMapCard() {
+  const marker = document.getElementById("mapMount");
+  if (!marker) return false;
+  const card = buildMapCard();
+  marker.replaceWith(card);
+  return true;
+}
+
 async function loadReadme() {
   const container = document.getElementById("content");
 
@@ -96,7 +124,11 @@ async function loadReadme() {
     });
 
     container.innerHTML = marked.parse(markdown);
+    const mounted = mountMapCard();
     buildToc();
+    if (mounted) {
+      initMap();
+    }
   } catch (err) {
     container.innerHTML = `
       <h1>Napaka</h1>
@@ -115,6 +147,138 @@ function initToggle() {
     const current = document.documentElement.getAttribute("data-theme") || "light";
     setTheme(current === "dark" ? "light" : "dark");
   });
+}
+
+const INDEX_OPTIONS = [
+  { key: "dci_acc_raw", label: "DCI (acc)" },
+  { key: "dci_lin_recon_raw", label: "DCI (lin)" },
+  { key: "bri_speedcorr", label: "BRI" },
+  { key: "fii_max", label: "FII max" },
+  { key: "rms_lin_z_mps2", label: "RMS lin z" },
+  { key: "std_lin_z_mps2", label: "STD lin z" },
+  { key: "p95_abs_lin_z_mps2", label: "P95 |lin z|" },
+  { key: "mean_abs_lin_z_mps2", label: "Mean |lin z|" }
+];
+
+function getColor(value, min, max) {
+  if (value === null || value === undefined || Number.isNaN(value)) return "#bdbdbd";
+  if (max === min) return "#2c7bb6";
+  const t = Math.max(0, Math.min(1, (value - min) / (max - min)));
+  const scale = [
+    "#b2182b",
+    "#d6604d",
+    "#f4a582",
+    "#fddbc7",
+    "#d9f0d3",
+    "#a6dba0",
+    "#5aae61",
+    "#1b7837"
+  ];
+  const idx = Math.min(scale.length - 1, Math.floor(t * (scale.length - 1)));
+  return scale[idx];
+}
+
+function buildLegend(label, min, max) {
+  const legend = document.getElementById("mapLegend");
+  if (!legend) return;
+  const minText = min === null ? "—" : min.toFixed(2);
+  const maxText = max === null ? "—" : max.toFixed(2);
+  legend.innerHTML = `
+    <div><strong>${label}</strong></div>
+    <div class="legend-scale">
+      <div class="legend-bar"></div>
+      <div class="legend-values"><span>${minText}</span><span>${maxText}</span></div>
+    </div>
+  `;
+}
+
+function getMinMax(features, key) {
+  let min = null;
+  let max = null;
+  features.forEach((f) => {
+    const value = Number(f.properties?.[key]);
+    if (Number.isNaN(value)) return;
+    if (min === null || value < min) min = value;
+    if (max === null || value > max) max = value;
+  });
+  return { min, max };
+}
+
+async function initMap() {
+  const mapEl = document.getElementById("map");
+  const select = document.getElementById("indexSelect");
+  if (!mapEl || !select || typeof L === "undefined") return;
+
+  INDEX_OPTIONS.forEach((opt) => {
+    const option = document.createElement("option");
+    option.value = opt.key;
+    option.textContent = opt.label;
+    select.appendChild(option);
+  });
+
+  const map = L.map(mapEl, { scrollWheelZoom: true }).setView([46.05, 14.5], 11);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  let geoLayer = null;
+  let features = [];
+  let didFit = false;
+
+  const res = await fetch("./data/windows.geojson", { cache: "no-store" });
+  if (!res.ok) {
+    console.error("GeoJSON ni dosegljiv.");
+    return;
+  }
+  const data = await res.json();
+  features = data.features || [];
+
+  const initialKey = INDEX_OPTIONS[0].key;
+  select.value = initialKey;
+
+  function renderLayer(key) {
+    const { min, max } = getMinMax(features, key);
+    buildLegend(INDEX_OPTIONS.find((o) => o.key === key)?.label || key, min, max);
+
+    if (geoLayer) {
+      geoLayer.remove();
+    }
+
+    geoLayer = L.geoJSON(data, {
+      pointToLayer: (feature, latlng) => {
+        const value = Number(feature.properties?.[key]);
+        return L.circleMarker(latlng, {
+          radius: 4,
+          stroke: false,
+          weight: 0,
+          fillOpacity: 0.9,
+          fillColor: getColor(value, min ?? 0, max ?? 1)
+        });
+      },
+      onEachFeature: (feature, layer) => {
+        const props = feature.properties || {};
+        const content = `
+          <strong>${key}</strong>: ${props[key] ?? "—"}<br>
+          <span>Speed: ${props.mean_speed_kmh ?? "—"} km/h</span><br>
+          <span>Ride: ${props.ride_id ?? "—"}</span>
+        `;
+        layer.bindPopup(content);
+      }
+    }).addTo(map);
+
+    if (!didFit) {
+      try {
+        map.fitBounds(geoLayer.getBounds(), { padding: [20, 20] });
+        didFit = true;
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  }
+
+  renderLayer(initialKey);
+  select.addEventListener("change", (event) => renderLayer(event.target.value));
 }
 
 initTheme();

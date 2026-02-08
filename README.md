@@ -26,6 +26,10 @@ Zbrani podatki bodo uporabljeni:
 
 ---
 
+# <div id="mapMount"></div>
+
+---
+
 # Zakaj sodelovati?
 
 S sodelovanjem v projektu:
