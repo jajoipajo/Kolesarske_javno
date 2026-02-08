@@ -168,6 +168,7 @@ const METHOD_OPTIONS = [
 ];
 
 const JENKS_COLORS = ["#1b7837", "#5aae61", "#a6dba0", "#f4a582", "#b2182b"];
+const NO_DATA_COLOR = "rgba(60,120,200,0.35)";
 const N_CLASSES = 5;
 
 function getValues(features, key) {
@@ -267,6 +268,12 @@ function buildLegend(label, breaks) {
       </div>
     `;
   });
+  items.push(`
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:${NO_DATA_COLOR}"></span>
+      <span>Ni podatkov</span>
+    </div>
+  `);
   legend.innerHTML = `
     <div><strong>${label}</strong></div>
     <div class="legend-items">${items.join("")}</div>
@@ -293,7 +300,7 @@ async function initMap() {
     methodSelect.appendChild(option);
   });
 
-  const map = L.map(mapEl, { scrollWheelZoom: true }).setView([46.05, 14.5], 11);
+  const map = L.map(mapEl, { scrollWheelZoom: true, preferCanvas: true, renderer: L.canvas() }).setView([46.05, 14.5], 11);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: '&copy; OpenStreetMap contributors'
@@ -334,18 +341,25 @@ async function initMap() {
       style: (feature) => {
         const value = Number(feature.properties?.[key]);
         const classIdx = classForValue(value, breaks);
-        const color = classIdx === null ? "#bdbdbd" : JENKS_COLORS[classIdx];
+        const color = classIdx === null ? NO_DATA_COLOR : JENKS_COLORS[classIdx];
         const geomType = feature.geometry?.type || "";
         if (geomType.includes("Line")) {
           return {
-            color,
+            color: classIdx === null ? "#9aa7b8" : color,
             weight: Math.max(1, Math.min(6, currentZoom - 10)),
             opacity: 0.9
           };
         }
+        if (classIdx === null) {
+          return {
+            color: "rgba(111,143,179,0.85)",
+            weight: 0.4,
+            fillOpacity: 0
+          };
+        }
         return {
-          color: "transparent",
-          weight: 0,
+          color: "rgba(0,0,0,0.18)",
+          weight: 0.5,
           fillColor: color,
           fillOpacity: 0.85
         };
@@ -374,30 +388,45 @@ async function initMap() {
   const initialData = await loadData(methodSelect.value);
   renderLayer(initialKey, initialData);
 
+  let zoomTimer = null;
   map.on("zoomend", () => {
-    if (!geoLayer) return;
-    geoLayer.setStyle((feature) => {
-      const value = Number(feature.properties?.[select.value]);
+    if (zoomTimer) {
+      clearTimeout(zoomTimer);
+    }
+    zoomTimer = setTimeout(() => {
+      zoomTimer = null;
+      if (!geoLayer) return;
       const values = getValues(features, select.value);
       const breaks = jenksBreaks(values, N_CLASSES);
-      const classIdx = classForValue(value, breaks);
-      const color = classIdx === null ? "#bdbdbd" : JENKS_COLORS[classIdx];
-      const geomType = feature.geometry?.type || "";
-      if (geomType.includes("Line")) {
+      geoLayer.setStyle((feature) => {
+        const value = Number(feature.properties?.[select.value]);
+        const classIdx = classForValue(value, breaks);
+        const color = classIdx === null ? NO_DATA_COLOR : JENKS_COLORS[classIdx];
+        const geomType = feature.geometry?.type || "";
+        if (geomType.includes("Line")) {
+          return {
+            color: classIdx === null ? "#9aa7b8" : color,
+            weight: Math.max(1, Math.min(6, map.getZoom() - 10)),
+            opacity: 0.9
+          };
+        }
+        if (classIdx === null) {
+          return {
+            color: "rgba(111,143,179,0.85)",
+            weight: 0.4,
+            fillOpacity: 0
+          };
+        }
         return {
-          color,
-          weight: Math.max(1, Math.min(6, map.getZoom() - 10)),
-          opacity: 0.9
+          color: "rgba(0,0,0,0.18)",
+          weight: 0.5,
+          fillColor: color,
+          fillOpacity: 0.85
         };
-      }
-      return {
-        color: "transparent",
-        weight: 0,
-        fillColor: color,
-        fillOpacity: 0.85
-      };
-    });
+      });
+    }, 120);
   });
+
 
   select.addEventListener("change", async (event) => {
     const data = await loadData(methodSelect.value);
