@@ -481,31 +481,31 @@ body::before{
 
 .map-legend{
   display:flex;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:8px;
   color: var(--muted);
   font-size: 0.9rem;
 }
 
-.legend-scale{
+.legend-items{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.legend-item{
   display:flex;
   align-items:center;
   gap:8px;
-}
-
-.legend-bar{
-  width: 180px;
-  height: 12px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #b2182b, #d6604d, #f4a582, #fddbc7, #d9f0d3, #a6dba0, #5aae61, #1b7837);
-  border: 1px solid rgba(0,0,0,0.08);
-}
-
-.legend-values{
-  display:flex;
-  gap:8px;
   font-variant-numeric: tabular-nums;
+}
+
+.legend-swatch{
+  width: 18px;
+  height: 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.15);
 }
 
 @media (max-width: 980px){

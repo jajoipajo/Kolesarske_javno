@@ -90,6 +90,8 @@ function buildMapCard() {
         <p class="map-subtitle">Preklopi prikaz med različnimi indeksi.</p>
       </div>
       <div class="map-controls">
+        <label for="methodSelect">Metoda</label>
+        <select id="methodSelect"></select>
         <label for="indexSelect">Indeks</label>
         <select id="indexSelect"></select>
       </div>
@@ -160,60 +162,135 @@ const INDEX_OPTIONS = [
   { key: "mean_abs_lin_z_mps2", label: "Mean |lin z|" }
 ];
 
-function getColor(value, min, max) {
-  if (value === null || value === undefined || Number.isNaN(value)) return "#bdbdbd";
-  if (max === min) return "#2c7bb6";
-  const t = Math.max(0, Math.min(1, (value - min) / (max - min)));
-  const scale = [
-    "#b2182b",
-    "#d6604d",
-    "#f4a582",
-    "#fddbc7",
-    "#d9f0d3",
-    "#a6dba0",
-    "#5aae61",
-    "#1b7837"
-  ];
-  const idx = Math.min(scale.length - 1, Math.floor(t * (scale.length - 1)));
-  return scale[idx];
+const METHOD_OPTIONS = [
+  { key: "hex", label: "Hex 10 m", file: "./data/avg_hex.geojson" },
+  { key: "snap", label: "Snap na mrežo", file: "./data/avg_snap.geojson" }
+];
+
+const JENKS_COLORS = ["#1b7837", "#5aae61", "#a6dba0", "#f4a582", "#b2182b"];
+const N_CLASSES = 5;
+
+function getValues(features, key) {
+  return features
+    .map((f) => Number(f.properties?.[key]))
+    .filter((v) => Number.isFinite(v))
+    .sort((a, b) => a - b);
 }
 
-function buildLegend(label, min, max) {
+function jenksBreaks(data, nClasses) {
+  if (!data.length) return [];
+  if (data.length <= nClasses) {
+    const min = data[0];
+    const max = data[data.length - 1];
+    const step = (max - min) / nClasses || 1;
+    const breaks = [min];
+    for (let i = 1; i <= nClasses; i += 1) {
+      breaks.push(min + step * i);
+    }
+    return breaks;
+  }
+
+  const lower = Array.from({ length: data.length + 1 }, () =>
+    Array.from({ length: nClasses + 1 }, () => 0)
+  );
+  const variance = Array.from({ length: data.length + 1 }, () =>
+    Array.from({ length: nClasses + 1 }, () => 0)
+  );
+
+  for (let i = 1; i <= nClasses; i += 1) {
+    lower[1][i] = 1;
+    variance[1][i] = 0;
+    for (let j = 2; j <= data.length; j += 1) {
+      variance[j][i] = Infinity;
+    }
+  }
+
+  for (let l = 2; l <= data.length; l += 1) {
+    let sum = 0;
+    let sumSquares = 0;
+    let w = 0;
+    for (let m = 1; m <= l; m += 1) {
+      const i3 = l - m + 1;
+      const val = data[i3 - 1];
+      w += 1;
+      sum += val;
+      sumSquares += val * val;
+      const v = sumSquares - (sum * sum) / w;
+      if (i3 !== 1) {
+        for (let j = 2; j <= nClasses; j += 1) {
+          if (variance[l][j] >= v + variance[i3 - 1][j - 1]) {
+            lower[l][j] = i3;
+            variance[l][j] = v + variance[i3 - 1][j - 1];
+          }
+        }
+      }
+    }
+    lower[l][1] = 1;
+    variance[l][1] = sumSquares - (sum * sum) / w;
+  }
+
+  const breaks = Array.from({ length: nClasses + 1 }, () => 0);
+  breaks[nClasses] = data[data.length - 1];
+  breaks[0] = data[0];
+  let k = data.length;
+  for (let j = nClasses; j >= 2; j -= 1) {
+    const id = lower[k][j] - 2;
+    breaks[j - 1] = data[id];
+    k = lower[k][j] - 1;
+  }
+  return breaks;
+}
+
+function classForValue(value, breaks) {
+  if (value === null || value === undefined || Number.isNaN(value)) return null;
+  for (let i = 0; i < breaks.length - 1; i += 1) {
+    if (value <= breaks[i + 1]) return i;
+  }
+  return breaks.length - 2;
+}
+
+function buildLegend(label, breaks) {
   const legend = document.getElementById("mapLegend");
   if (!legend) return;
-  const minText = min === null ? "—" : min.toFixed(2);
-  const maxText = max === null ? "—" : max.toFixed(2);
+  if (!breaks.length) {
+    legend.innerHTML = `<div><strong>${label}</strong></div><div>Ni podatkov</div>`;
+    return;
+  }
+  const items = breaks.slice(0, -1).map((b, i) => {
+    const from = breaks[i].toFixed(2);
+    const to = breaks[i + 1].toFixed(2);
+    const color = JENKS_COLORS[i] || JENKS_COLORS[JENKS_COLORS.length - 1];
+    return `
+      <div class="legend-item">
+        <span class="legend-swatch" style="background:${color}"></span>
+        <span>${from} – ${to}</span>
+      </div>
+    `;
+  });
   legend.innerHTML = `
     <div><strong>${label}</strong></div>
-    <div class="legend-scale">
-      <div class="legend-bar"></div>
-      <div class="legend-values"><span>${minText}</span><span>${maxText}</span></div>
-    </div>
+    <div class="legend-items">${items.join("")}</div>
   `;
-}
-
-function getMinMax(features, key) {
-  let min = null;
-  let max = null;
-  features.forEach((f) => {
-    const value = Number(f.properties?.[key]);
-    if (Number.isNaN(value)) return;
-    if (min === null || value < min) min = value;
-    if (max === null || value > max) max = value;
-  });
-  return { min, max };
 }
 
 async function initMap() {
   const mapEl = document.getElementById("map");
   const select = document.getElementById("indexSelect");
-  if (!mapEl || !select || typeof L === "undefined") return;
+  const methodSelect = document.getElementById("methodSelect");
+  if (!mapEl || !select || !methodSelect || typeof L === "undefined") return;
 
   INDEX_OPTIONS.forEach((opt) => {
     const option = document.createElement("option");
     option.value = opt.key;
     option.textContent = opt.label;
     select.appendChild(option);
+  });
+
+  METHOD_OPTIONS.forEach((opt) => {
+    const option = document.createElement("option");
+    option.value = opt.key;
+    option.textContent = opt.label;
+    methodSelect.appendChild(option);
   });
 
   const map = L.map(mapEl, { scrollWheelZoom: true }).setView([46.05, 14.5], 11);
@@ -224,44 +301,61 @@ async function initMap() {
 
   let geoLayer = null;
   let features = [];
+  let dataCache = {};
   let didFit = false;
-
-  const res = await fetch("./data/windows.geojson", { cache: "no-store" });
-  if (!res.ok) {
-    console.error("GeoJSON ni dosegljiv.");
-    return;
-  }
-  const data = await res.json();
-  features = data.features || [];
 
   const initialKey = INDEX_OPTIONS[0].key;
   select.value = initialKey;
+  methodSelect.value = METHOD_OPTIONS[0].key;
 
-  function renderLayer(key) {
-    const { min, max } = getMinMax(features, key);
-    buildLegend(INDEX_OPTIONS.find((o) => o.key === key)?.label || key, min, max);
+  async function loadData(methodKey) {
+    if (dataCache[methodKey]) return dataCache[methodKey];
+    const method = METHOD_OPTIONS.find((m) => m.key === methodKey);
+    if (!method) throw new Error("Unknown method");
+    const res = await fetch(method.file, { cache: "no-store" });
+    if (!res.ok) throw new Error(`GeoJSON ni dosegljiv (${method.file}).`);
+    const data = await res.json();
+    dataCache[methodKey] = data;
+    return data;
+  }
+
+  function renderLayer(key, data) {
+    features = data.features || [];
+    const values = getValues(features, key);
+    const breaks = jenksBreaks(values, N_CLASSES);
+    buildLegend(INDEX_OPTIONS.find((o) => o.key === key)?.label || key, breaks);
 
     if (geoLayer) {
       geoLayer.remove();
     }
 
+    const currentZoom = map.getZoom();
     geoLayer = L.geoJSON(data, {
-      pointToLayer: (feature, latlng) => {
+      style: (feature) => {
         const value = Number(feature.properties?.[key]);
-        return L.circleMarker(latlng, {
-          radius: 4,
-          stroke: false,
+        const classIdx = classForValue(value, breaks);
+        const color = classIdx === null ? "#bdbdbd" : JENKS_COLORS[classIdx];
+        const geomType = feature.geometry?.type || "";
+        if (geomType.includes("Line")) {
+          return {
+            color,
+            weight: Math.max(1, Math.min(6, currentZoom - 10)),
+            opacity: 0.9
+          };
+        }
+        return {
+          color: "transparent",
           weight: 0,
-          fillOpacity: 0.9,
-          fillColor: getColor(value, min ?? 0, max ?? 1)
-        });
+          fillColor: color,
+          fillOpacity: 0.85
+        };
       },
       onEachFeature: (feature, layer) => {
         const props = feature.properties || {};
         const content = `
           <strong>${key}</strong>: ${props[key] ?? "—"}<br>
           <span>Speed: ${props.mean_speed_kmh ?? "—"} km/h</span><br>
-          <span>Ride: ${props.ride_id ?? "—"}</span>
+          <span>Points: ${props.n_points ?? "—"}</span>
         `;
         layer.bindPopup(content);
       }
@@ -277,8 +371,43 @@ async function initMap() {
     }
   }
 
-  renderLayer(initialKey);
-  select.addEventListener("change", (event) => renderLayer(event.target.value));
+  const initialData = await loadData(methodSelect.value);
+  renderLayer(initialKey, initialData);
+
+  map.on("zoomend", () => {
+    if (!geoLayer) return;
+    geoLayer.setStyle((feature) => {
+      const value = Number(feature.properties?.[select.value]);
+      const values = getValues(features, select.value);
+      const breaks = jenksBreaks(values, N_CLASSES);
+      const classIdx = classForValue(value, breaks);
+      const color = classIdx === null ? "#bdbdbd" : JENKS_COLORS[classIdx];
+      const geomType = feature.geometry?.type || "";
+      if (geomType.includes("Line")) {
+        return {
+          color,
+          weight: Math.max(1, Math.min(6, map.getZoom() - 10)),
+          opacity: 0.9
+        };
+      }
+      return {
+        color: "transparent",
+        weight: 0,
+        fillColor: color,
+        fillOpacity: 0.85
+      };
+    });
+  });
+
+  select.addEventListener("change", async (event) => {
+    const data = await loadData(methodSelect.value);
+    renderLayer(event.target.value, data);
+  });
+
+  methodSelect.addEventListener("change", async (event) => {
+    const data = await loadData(event.target.value);
+    renderLayer(select.value, data);
+  });
 }
 
 initTheme();
