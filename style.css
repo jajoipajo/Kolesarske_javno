@@ -534,7 +534,7 @@ body::before{
   display:grid;
   grid-template-columns: minmax(180px, 20%) minmax(0, 80%);
   gap:12px;
-  align-items:start;
+  align-items:stretch;
 }
 
 .map-index-doc{
@@ -547,6 +547,7 @@ body::before{
   border-radius: 12px;
   padding: 10px 12px;
   background: color-mix(in srgb, var(--panel) 94%, transparent);
+  height: 100%;
 }
 
 .map-legend{
@@ -554,6 +555,7 @@ body::before{
   border-radius: 12px;
   padding: 10px 12px;
   background: color-mix(in srgb, var(--panel) 94%, transparent);
+  height: 100%;
 }
 
 .legend-title{

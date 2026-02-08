@@ -210,14 +210,10 @@ function initToggle() {
 }
 
 const INDEX_OPTIONS = [
-  { key: "dci_acc_raw", label: "DCI (acc)" },
-  { key: "dci_lin_recon_raw", label: "DCI (lin)" },
+  { key: "rms_lin_z_mps2", label: "RMS" },
+  { key: "dci_acc_raw", label: "DCI" },
   { key: "bri_speedcorr", label: "BRI" },
-  { key: "fii_max", label: "FII max" },
-  { key: "rms_lin_z_mps2", label: "RMS lin z" },
-  { key: "std_lin_z_mps2", label: "STD lin z" },
-  { key: "p95_abs_lin_z_mps2", label: "P95 |lin z|" },
-  { key: "mean_abs_lin_z_mps2", label: "Mean |lin z|" }
+  { key: "fii_max", label: "FII" }
 ];
 
 const METHOD_OPTIONS = [
@@ -225,7 +221,7 @@ const METHOD_OPTIONS = [
   { key: "snap", label: "Snap na mrežo", file: "./data/avg_snap.geojson" }
 ];
 
-const JENKS_COLORS = ["#1b7837", "#5aae61", "#a6dba0", "#f4a582", "#b2182b"];
+const JENKS_COLORS = ["#1a9641", "#a6d96a", "#ffffbf", "#fdae61", "#d7191c"];
 const NO_DATA_COLOR = "rgba(60,120,200,0.35)";
 const N_CLASSES = 5;
 
