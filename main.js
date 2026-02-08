@@ -20,8 +20,7 @@ function initTheme() {
     setTheme(stored);
     return;
   }
-  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-  setTheme(prefersDark ? "dark" : "light");
+  setTheme("light");
 }
 
 function slugify(text) {
@@ -39,10 +38,14 @@ function slugify(text) {
 function buildToc() {
   const container = document.getElementById("content");
   const toc = document.getElementById("tocList");
+  const topToc = document.getElementById("topTocList");
   if (!container || !toc) return;
 
   toc.innerHTML = "";
-  const headings = Array.from(container.querySelectorAll("h1, h2, h3"));
+  if (topToc) topToc.innerHTML = "";
+  const headings = Array.from(container.querySelectorAll("h1, h2, h3"))
+    .filter((h) => !h.closest(".map-card"))
+    .filter((h) => (h.textContent || "").trim().length > 0);
   headings.forEach((heading) => {
     if (!heading.id) {
       const base = slugify(heading.textContent || "");
@@ -60,10 +63,16 @@ function buildToc() {
     link.textContent = heading.textContent || "";
     link.dataset.level = heading.tagName.replace("H", "");
     toc.appendChild(link);
+
+    if (topToc) {
+      const mobileLink = link.cloneNode(true);
+      topToc.appendChild(mobileLink);
+    }
   });
 
   if (headings.length === 0) {
     toc.innerHTML = "<span class=\"toc-empty\">Ni naslovov</span>";
+    if (topToc) topToc.innerHTML = "<span class=\"toc-empty\">Ni naslovov</span>";
   }
 }
 
@@ -80,6 +89,47 @@ function initTocToggle() {
   });
 }
 
+function initTopTocToggle() {
+  const btn = document.getElementById("topTocToggle");
+  const panel = document.getElementById("topTocPanel");
+  const list = document.getElementById("topTocList");
+  if (!btn || !panel || !list) return;
+
+  const close = () => {
+    panel.classList.remove("is-open");
+    panel.setAttribute("aria-hidden", "true");
+    btn.setAttribute("aria-expanded", "false");
+  };
+
+  btn.addEventListener("click", () => {
+    const isOpen = panel.classList.toggle("is-open");
+    panel.setAttribute("aria-hidden", (!isOpen).toString());
+    btn.setAttribute("aria-expanded", isOpen.toString());
+  });
+
+  list.addEventListener("click", (event) => {
+    const target = event.target;
+    if (target && target.tagName === "A") {
+      close();
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!panel.classList.contains("is-open")) return;
+    if (panel.contains(event.target) || btn.contains(event.target)) return;
+    close();
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 760) {
+      close();
+    }
+  });
+}
+
+const DATA_STATUS_TEXT = "8. 2. 2026 ob 15:49";
+const INDEX_DOC_PATH = "./index_descriptions.md";
+
 function buildMapCard() {
   const card = document.createElement("section");
   card.className = "card map-card";
@@ -87,7 +137,6 @@ function buildMapCard() {
     <div class="map-header">
       <div>
         <h2>Interaktivna karta</h2>
-        <p class="map-subtitle">Preklopi prikaz med različnimi indeksi.</p>
       </div>
       <div class="map-controls">
         <label for="methodSelect">Metoda</label>
@@ -96,8 +145,12 @@ function buildMapCard() {
         <select id="indexSelect"></select>
       </div>
     </div>
+    <p class="map-note">Povprečne vrednosti do sedaj zbranih meritev (stanje ${DATA_STATUS_TEXT}).</p>
     <div id="map" class="map" role="img" aria-label="Leaflet karta z merilnimi točkami"></div>
-    <div id="mapLegend" class="map-legend" aria-live="polite"></div>
+    <div class="map-meta">
+      <div id="mapLegend" class="map-legend" aria-live="polite"></div>
+      <div id="indexDoc" class="map-index-doc">Nalaganje opisa indeksa ...</div>
+    </div>
   `;
   return card;
 }
@@ -106,7 +159,12 @@ function mountMapCard() {
   const marker = document.getElementById("mapMount");
   if (!marker) return false;
   const card = buildMapCard();
-  marker.replaceWith(card);
+  const parent = marker.parentElement;
+  if (parent && /^H[1-6]$/.test(parent.tagName)) {
+    parent.replaceWith(card);
+  } else {
+    marker.replaceWith(card);
+  }
   return true;
 }
 
@@ -253,8 +311,9 @@ function classForValue(value, breaks) {
 function buildLegend(label, breaks) {
   const legend = document.getElementById("mapLegend");
   if (!legend) return;
+  const title = `<div class="legend-title">Legenda</div>`;
   if (!breaks.length) {
-    legend.innerHTML = `<div><strong>${label}</strong></div><div>Ni podatkov</div>`;
+    legend.innerHTML = `${title}<div><strong>${label}</strong></div>`;
     return;
   }
   const items = breaks.slice(0, -1).map((b, i) => {
@@ -268,16 +327,25 @@ function buildLegend(label, breaks) {
       </div>
     `;
   });
-  items.push(`
-    <div class="legend-item">
-      <span class="legend-swatch" style="background:${NO_DATA_COLOR}"></span>
-      <span>Ni podatkov</span>
-    </div>
-  `);
   legend.innerHTML = `
+    ${title}
     <div><strong>${label}</strong></div>
     <div class="legend-items">${items.join("")}</div>
   `;
+}
+
+function parseIndexDocs(markdown) {
+  const docs = {};
+  const sections = markdown.split(/^##\s+/m).slice(1);
+  sections.forEach((section) => {
+    const nl = section.indexOf("\n");
+    if (nl === -1) return;
+    const key = section.slice(0, nl).trim();
+    const body = section.slice(nl + 1).trim();
+    if (!key || !body) return;
+    docs[key] = marked.parse(body);
+  });
+  return docs;
 }
 
 async function initMap() {
@@ -310,6 +378,28 @@ async function initMap() {
   let features = [];
   let dataCache = {};
   let didFit = false;
+  let indexDocs = {};
+
+  const docEl = document.getElementById("indexDoc");
+  try {
+    const docRes = await fetch(INDEX_DOC_PATH, { cache: "no-store" });
+    if (docRes.ok) {
+      const md = await docRes.text();
+      indexDocs = parseIndexDocs(md);
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+
+  function updateIndexDoc(key) {
+    if (!docEl) return;
+    const html = indexDocs[key];
+    if (html) {
+      docEl.innerHTML = html;
+      return;
+    }
+    docEl.innerHTML = "<p>Opis indeksa trenutno ni na voljo.</p>";
+  }
 
   const initialKey = INDEX_OPTIONS[0].key;
   select.value = initialKey;
@@ -331,6 +421,7 @@ async function initMap() {
     const values = getValues(features, key);
     const breaks = jenksBreaks(values, N_CLASSES);
     buildLegend(INDEX_OPTIONS.find((o) => o.key === key)?.label || key, breaks);
+    updateIndexDoc(key);
 
     if (geoLayer) {
       geoLayer.remove();
@@ -442,4 +533,5 @@ async function initMap() {
 initTheme();
 initToggle();
 initTocToggle();
+initTopTocToggle();
 loadReadme();
