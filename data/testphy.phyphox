@@ -1,0 +1,148 @@
+<phyphox version="1.14">
+    <title>Kolesarske_3</title>
+    <category>Simple custom experiments</category>
+    <description>A simple experiment.</description>
+    <color>red</color>
+    <data-containers>
+        <container size="0">accX</container>
+        <container size="0">accY</container>
+        <container size="0">accZ</container>
+        <container size="0">acc_time</container>
+        <container size="0">gpsLat</container>
+        <container size="0">gpsLon</container>
+        <container size="0">gpsZ</container>
+        <container size="0">gpsV</container>
+        <container size="0">gpsDir</container>
+        <container size="0">gps_time</container>
+        <container size="0">gpsAccuracy</container>
+        <container size="0">gpsZAccuracy</container>
+        <container size="1">gpsStatus</container>
+        <container size="1">gpsSatellites</container>
+                <container size="0">lin_accX</container>
+        <container size="0">lin_accY</container>
+        <container size="0">lin_accZ</container>
+        <container size="0">lin_acc_time</container>
+        
+    </data-containers>
+    <input>
+        <sensor type="accelerometer" rate="0.0">
+            <output component="x">accX</output>
+            <output component="y">accY</output>
+            <output component="z">accZ</output>
+            <output component="t">acc_time</output>
+        </sensor>
+                <location>
+            <output component="lat">gpsLat</output>
+            <output component="lon">gpsLon</output>
+            <output component="z">gpsZ</output>
+            <output component="v">gpsV</output>
+            <output component="dir">gpsDir</output>
+            <output component="accuracy">gpsAccuracy</output>
+            <output component="zAccuracy">gpsZAccuracy</output>
+            <output component="status">gpsStatus</output>
+            <output component="satellites">gpsSatellites</output>
+            <output component="t">gps_time</output>
+        </location>
+            <sensor type="linear_acceleration" rate="0.0">
+            <output component="x">lin_accX</output>
+            <output component="y">lin_accY</output>
+            <output component="z">lin_accZ</output>
+            <output component="t">lin_acc_time</output>
+        </sensor>
+            
+    </input>
+    <views>
+            <view label="Accelerometer">
+                <graph timeOnX="true" label="X" labelX="t (s)" labelY="a (m/s²)" partialUpdate="true">
+                    <input axis="x">acc_time</input>
+                    <input axis="y">accX</input>
+                </graph>
+                <graph timeOnX="true" label="Y" labelX="t (s)" labelY="a (m/s²)" partialUpdate="true">
+                    <input axis="x">acc_time</input>
+                    <input axis="y">accY</input>
+                </graph>
+                <graph timeOnX="true" label="Z" labelX="t (s)" labelY="a (m/s²)" partialUpdate="true">
+                    <input axis="x">acc_time</input>
+                    <input axis="y">accZ</input>
+                </graph>
+            </view>
+                        <view label="Location">
+            <graph label="Latitude" timeOnX="true" labelX="t (s)" labelY="Latitude (°)" partialUpdate="true">
+                <input axis="x">gps_time</input>
+                <input axis="y">gpsLat</input>
+            </graph>
+            <graph label="Longitude" timeOnX="true" labelX="t (s)" labelY="Longitude (°)" partialUpdate="true">
+                <input axis="x">gps_time</input>
+                <input axis="y">gpsLon</input>
+            </graph>
+            <graph label="Height" timeOnX="true" labelX="t (s)" labelY="z (m)" partialUpdate="true">
+                <input axis="x">gps_time</input>
+                <input axis="y">gpsZ</input>
+            </graph>
+            <graph label="Velocity" timeOnX="true" labelX="t (s)" labelY="v (m/s)" partialUpdate="true">
+                <input axis="x">gps_time</input>
+                <input axis="y">gpsV</input>
+            </graph>
+            <graph label="Direction" timeOnX="true" labelX="t (s)" labelY="heading (°)" partialUpdate="true">
+                <input axis="x">gps_time</input>
+                <input axis="y">gpsDir</input>
+            </graph>
+            <value label="Horizontal Accuracy" size="1" precision="1" unit="m">
+                <input>gpsAccuracy</input>
+            </value>
+            <value label="Vertical Accuracy" size="1" precision="1" unit="m">
+                <input>gpsZAccuracy</input>
+            </value>
+            <value label="Satellites" size="1" precision="0">
+                <input>gpsSatellites</input>
+            </value>
+            <value label="Status">
+                <input>gpsStatus</input>
+                <map max="-1">GPS disabled</map>
+                <map max="0">Waiting for signal</map>
+                <map max="1">Active</map>
+            </value>
+        </view>
+            <view label="Linear Accelerometer">
+            <graph timeOnX="true" label="X" labelX="t (s)" labelY="a (m/s²)" partialUpdate="true">
+                <input axis="x">lin_acc_time</input>
+                <input axis="y">lin_accX</input>
+            </graph>
+            <graph timeOnX="true" label="Y" labelX="t (s)" labelY="a (m/s²)" partialUpdate="true">
+                <input axis="x">lin_acc_time</input>
+                <input axis="y">lin_accY</input>
+            </graph>
+            <graph timeOnX="true" label="Z" labelX="t (s)" labelY="a (m/s²)" partialUpdate="true">
+                <input axis="x">lin_acc_time</input>
+                <input axis="y">lin_accZ</input>
+            </graph>
+        </view>
+            
+    </views>
+    
+    <export>
+        <set name="Accelerometer">
+            <data name="Time (s)">acc_time</data>
+            <data name="X (m/s^2)">accX</data>
+            <data name="Y (m/s^2)">accY</data>
+            <data name="Z (m/s^2)">accZ</data>
+        </set>
+            <set name="Location">
+            <data name="Time (s)">gps_time</data>
+            <data name="Latitude (°)">gpsLat</data>
+            <data name="Longitude (°)">gpsLon</data>
+            <data name="Height (m)">gpsZ</data>
+            <data name="Velocity (m/s)">gpsV</data>
+            <data name="Direction (°)">gpsDir</data>
+            <data name="Horizontal Accuracy (m)">gpsAccuracy</data>
+            <data name="Vertical Accuracy (°)">gpsZAccuracy</data>
+        </set>
+            <set name="Linear Accelerometer">
+            <data name="Time (s)">lin_acc_time</data>
+            <data name="X (m/s^2)">lin_accX</data>
+            <data name="Y (m/s^2)">lin_accY</data>
+            <data name="Z (m/s^2)">lin_accZ</data>
+        </set>
+            
+    </export>
+</phyphox>
