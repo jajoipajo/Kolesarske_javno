@@ -39,7 +39,7 @@ S sodelovanjem v projektu:
 - sodeluješ pri **akademskem raziskovalnem delu**,  
 - zastopaš perspektivo dejanskega uporabnika kolesarskih poti.
 
-Projekt temelji na predpostavki, da imajo kolesarji **najboljši vpogled v realno stanje poti**, saj jih uporabljajo vsak dan. Več kot bo sodelujočih, bolj zanesljivi in prostorsko raznoliki bodo rezultati.
+Projekt temelji na predpostavki, da imajo kolesarji **najboljši vpogled v realno stanje poti**, saj jih uporabljajo vsak dan. Uporabnost rezultatov bomo preverjali glede na ponovitve, merilno opremo in prostorsko pokritost.
 
 Sodelovanje je prostovoljno, odprto in ne zahteva posebnega tehničnega znanja.
 
@@ -75,7 +75,7 @@ Spodaj so natančna navodila za izvedbo meritev. Prosimo, da se jih čim bolj dr
   - [iOS](https://apps.apple.com/us/app/phyphox/id1127319693)  
   - [Android](https://play.google.com/store/apps/details?id=de.rwth_aachen.phyphox)  
   - [F-Droid](https://f-droid.org/packages/de.rwth_aachen.phyphox/)  
-  - iOS 12.0 ali novejši, Android 4.0 ali novejši.
+  - podprto različico sistema preveri pri izbranem uradnem viru aplikacije.
 
 - Ob prvem zagonu aplikaciji dovoli dostop do vseh senzorjev.
 
@@ -84,7 +84,7 @@ Spodaj so natančna navodila za izvedbo meritev. Prosimo, da se jih čim bolj dr
   - skeniraj QR kodo,
   - izberi *Save to collection*.
 
-S tem shraniš prednastavljen eksperiment **kolesarske_meritve**.
+S tem shraniš prednastavljen eksperiment **Kolesarske_3**.
 
 ![QR koda eksperimenta](slike/Kolesarske3_QR.png)
 
@@ -97,7 +97,7 @@ S tem shraniš prednastavljen eksperiment **kolesarske_meritve**.
 
 - Preveri tlak v obeh zračnicah:
   - tlak naj ustreza vrednostim, označenim na plaščih,
-  - obe zračnici naj imata **enak tlak**.
+  - tlak sprednje in zadnje pnevmatike zabeleži ločeno; ni zahteve, da sta enaka.
 
 ---
 
@@ -108,7 +108,7 @@ S tem shraniš prednastavljen eksperiment **kolesarske_meritve**.
   - izklopi varčevanje z baterijo,
   - vklopi lokacijo/GPS.
 
-- Odpri phyphox, poišči eksperiment **kolesarske_meritve** in ga zaženi s klikom na puščico.
+- Odpri phyphox, poišči eksperiment **Kolesarske_3** in ga zaženi s klikom na puščico.
 - **Ne zakleni zaslona** (lahko znižaš svetlost).
 - Začni s kolesarjenjem.
 
@@ -116,15 +116,15 @@ Med meritvijo:
 - kolesari predvsem po kolesarskih poteh,
 - upoštevaj cestnoprometne predpise,
 - bodi odgovoren in skrbi za svojo ter tujo varnost,
-- občasno preveri, ali meritev še poteka (hitro, brez odvračanja pozornosti).
+- meritev preverjaj samo ob varnem postanku; med vožnjo ne upravljaj telefona.
 
 Če se med vožnjo začasno ustaviš (npr. semafor), **ni treba ustaviti meritve**.
 
 Ko končaš s kolesarjenjem:
 - ustavi eksperiment,
-- izvozi podatke v obliki **CSV**,
+- izberi izvoz **CSV** in pošlji nastali **ZIP** s podatki,
 - podatke pošlji po e-pošti na:  
-  **kolesarske(at)gmail.com**
+  **jaka.grad1(at)gmail.com** (trenutni zaprti test; pred javnim zbiranjem bo objavljen projektni naslov)
 
 V sporočilo lahko dodaš:
 - posebnosti poti,
@@ -136,3 +136,10 @@ V sporočilo lahko dodaš:
 # Viri slik
 
 Slike in grafični materiali so avtorski ali uporabljeni z dovoljenjem in so namenjeni izključno predstavitvi projekta.
+
+
+# Prikaz meritev
+
+Javna karta prikazuje samo agregirane meritve prostovoljcev. Referenčne meritve z vedno istim kolesom in telefonom ostanejo v zasebni raziskovalni zbirki; primerjavo bomo obravnavali v magistrskem delu. Posameznih časovno urejenih sledi ne objavljamo.
+
+Razredi karte so relativni razredi prikazane izdaje. Vrednosti opisujejo vibracijski odziv, ne potrjene prometne varnosti. Pri kazalnikih BRI in FII so uporabljene prilagoditve opisane ob izbiri kazalnika. Pred prvimi ustreznimi prostovoljskimi meritvami je karta prazna.
