@@ -212,8 +212,8 @@ function initToggle() {
 const INDEX_OPTIONS = [
   { key: "rms_lin_z_mps2", label: "RMS" },
   { key: "dci_acc_raw", label: "DCI" },
-  { key: "bri_speedcorr", label: "BRI" },
-  { key: "fii_max", label: "FII" }
+  { key: "bri_speedcorr", label: "BRI (prilagojen)" },
+  { key: "fii_max", label: "FII (100 Hz)" }
 ];
 
 const METHOD_OPTIONS = [
@@ -225,9 +225,15 @@ const JENKS_COLORS = ["#1a9641", "#a6d96a", "#ffffbf", "#fdae61", "#d7191c"];
 const NO_DATA_COLOR = "rgba(60,120,200,0.35)";
 const N_CLASSES = 5;
 
+function numericIndex(value) {
+  if (value === null || value === undefined || value === "" || typeof value === "boolean") return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
 function getValues(features, key) {
   return features
-    .map((f) => Number(f.properties?.[key]))
+    .map((f) => numericIndex(f.properties?.[key]))
     .filter((v) => Number.isFinite(v))
     .sort((a, b) => a - b);
 }
@@ -307,7 +313,7 @@ function classForValue(value, breaks) {
 function buildLegend(label, breaks) {
   const legend = document.getElementById("mapLegend");
   if (!legend) return;
-  const title = `<div class="legend-title">Legenda</div>`;
+  const title = `<div class="legend-title">Legenda — relativni razredi te izdaje</div>`;
   if (!breaks.length) {
     legend.innerHTML = `${title}<div><strong>${label}</strong></div>`;
     return;
@@ -315,7 +321,7 @@ function buildLegend(label, breaks) {
   const items = breaks.slice(0, -1).map((b, i) => {
     const from = breaks[i].toFixed(2);
     const to = breaks[i + 1].toFixed(2);
-    const color = JENKS_COLORS[i] || JENKS_COLORS[JENKS_COLORS.length - 1];
+    const color = JENKS_COLORS[label === "DCI" ? N_CLASSES - 1 - i : i] || JENKS_COLORS[JENKS_COLORS.length - 1];
     return `
       <div class="legend-item">
         <span class="legend-swatch" style="background:${color}"></span>
@@ -408,12 +414,23 @@ async function initMap() {
     const res = await fetch(method.file, { cache: "no-store" });
     if (!res.ok) throw new Error(`GeoJSON ni dosegljiv (${method.file}).`);
     const data = await res.json();
+    if (data.metadata?.study_group !== "volunteer" || data.metadata?.algo_version !== "v2.0") {
+      throw new Error("Sloj ni preverjena izdaja agregiranih meritev prostovoljcev.");
+    }
+    if (Object.values(dataCache).some(other => other.metadata?.release_id !== data.metadata?.release_id)) {
+      throw new Error("Sloja pripadata različnima izdajama; ponovno naložite stran.");
+    }
     dataCache[methodKey] = data;
     return data;
   }
 
   function renderLayer(key, data) {
     features = data.features || [];
+    if (!features.length) {
+      if (geoLayer) geoLayer.remove();
+      document.getElementById("mapLegend").textContent = "Preverjeni agregati prostovoljcev še niso na voljo.";
+      return;
+    }
     const values = getValues(features, key);
     const breaks = jenksBreaks(values, N_CLASSES);
     buildLegend(INDEX_OPTIONS.find((o) => o.key === key)?.label || key, breaks);
@@ -426,9 +443,9 @@ async function initMap() {
     const currentZoom = map.getZoom();
     geoLayer = L.geoJSON(data, {
       style: (feature) => {
-        const value = Number(feature.properties?.[key]);
+        const value = numericIndex(feature.properties?.[key]);
         const classIdx = classForValue(value, breaks);
-        const color = classIdx === null ? NO_DATA_COLOR : JENKS_COLORS[classIdx];
+        const color = classIdx === null ? NO_DATA_COLOR : JENKS_COLORS[key === "dci_acc_raw" ? N_CLASSES - 1 - classIdx : classIdx];
         const geomType = feature.geometry?.type || "";
         if (geomType.includes("Line")) {
           return {
@@ -455,8 +472,8 @@ async function initMap() {
         const props = feature.properties || {};
         const content = `
           <strong>${key}</strong>: ${props[key] ?? "—"}<br>
-          <span>Speed: ${props.mean_speed_kmh ?? "—"} km/h</span><br>
-          <span>Points: ${props.n_points ?? "—"}</span>
+          <span>Hitrost: ${props.mean_speed_kmh ?? "—"} km/h</span><br>
+          <span>Vožnje: ${props.n_rides ?? "—"}</span><br><span>Okna: ${props.n_windows ?? props.n_points ?? "—"}</span>
         `;
         layer.bindPopup(content);
       }
@@ -472,8 +489,13 @@ async function initMap() {
     }
   }
 
-  const initialData = await loadData(methodSelect.value);
-  renderLayer(initialKey, initialData);
+  try {
+    const initialData = await loadData(methodSelect.value);
+    renderLayer(initialKey, initialData);
+  } catch (error) {
+    document.getElementById("mapLegend").textContent = "Preverjeni agregati prostovoljcev še niso na voljo.";
+    console.warn(error.message);
+  }
 
   let zoomTimer = null;
   map.on("zoomend", () => {
@@ -486,9 +508,9 @@ async function initMap() {
       const values = getValues(features, select.value);
       const breaks = jenksBreaks(values, N_CLASSES);
       geoLayer.setStyle((feature) => {
-        const value = Number(feature.properties?.[select.value]);
+        const value = numericIndex(feature.properties?.[select.value]);
         const classIdx = classForValue(value, breaks);
-        const color = classIdx === null ? NO_DATA_COLOR : JENKS_COLORS[classIdx];
+        const color = classIdx === null ? NO_DATA_COLOR : JENKS_COLORS[select.value === "dci_acc_raw" ? N_CLASSES - 1 - classIdx : classIdx];
         const geomType = feature.geometry?.type || "";
         if (geomType.includes("Line")) {
           return {

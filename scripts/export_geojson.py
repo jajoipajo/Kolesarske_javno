@@ -2,14 +2,15 @@
 
 import argparse
 import json
+import os
 import subprocess
 from pathlib import Path
 from typing import Iterable
 
 import duckdb
 
-DEFAULT_DB = Path(r"F:\GEO_MAG\Magisterij\github_clone\Kolesarske-test\db\kolesarske.duckdb")
-DEFAULT_OUT = Path("data") / "windows.geojson"
+DEFAULT_DB = Path(os.getenv("KOLESARSKE_DB", str(Path.home() / "Documents/kolesarske_pipeline/db/kolesarske.duckdb")))
+DEFAULT_OUT = Path.home() / "Documents/kolesarske_pipeline/private_exports/windows.geojson"
 DEFAULT_PARQUET_GLOB = "data/windows_parquet/**/*.parquet"
 
 INDEX_FIELDS = [
@@ -106,6 +107,9 @@ def export_geojson(
     finally:
         con.close()
 
+    public_root = Path(__file__).resolve().parents[1]
+    if out_path.resolve().is_relative_to(public_root):
+        raise ValueError("Raw ride points cannot be exported inside the public repository.")
     geojson = _rows_to_geojson(rows, columns)
     _ensure_parent(out_path)
     out_path.write_text(json.dumps(geojson, ensure_ascii=False), encoding="utf-8")
@@ -144,8 +148,7 @@ def main() -> None:
     print(f"[OK] GeoJSON exported: {out_path} ({count} points)")
 
     if args.push:
-        git_commit_and_push(repo_root, out_path, args.message)
-        print("[OK] Pushed to GitHub.")
+        raise ValueError("Publishing individual ride points is disabled.")
 
 
 if __name__ == "__main__":
