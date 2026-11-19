@@ -1,0 +1,19 @@
+{
+  "phase": "closed-pilot",
+  "phaseLabel": "Zaprt pilot",
+  "contactEmail": "jaka.grad1@gmail.com",
+  "experiment": {
+    "name": "Kolesarske_3",
+    "path": "data/testphy.phyphox"
+  },
+  "export": {
+    "archiveFormat": "ZIP",
+    "filenameKeyword": "measurement",
+    "filenameExample": "measurement_Kolesarske_3.zip",
+    "requiredCsvFiles": [
+      "Accelerometer.csv",
+      "Location.csv",
+      "Linear Accelerometer.csv"
+    ]
+  }
+}

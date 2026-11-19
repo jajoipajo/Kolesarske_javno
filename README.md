@@ -1,145 +1,78 @@
-# Kolesarske: merjenje kakovosti kolesarskih površin
+# Kolesarske: raziskovanje kolesarskih površin v Ljubljani
 
-**Kolesarske** je projekt občanske znanosti, v katerem skupaj s prostovoljci merimo kakovost (gladkost oziroma hrapavost) kolesarskih površin s pomočjo pametnega telefona in kolesa.
+**Zaprt pilot — sodelovanje po predhodnem dogovoru.** Pred prvo meritvijo [piši raziskovalcu](mailto:jaka.grad1@gmail.com). Prejel boš navodila za vključitev in dogovor o merilni opremi. Obisk strani ali odprtje e-poštnega programa še ne pomeni prijave oziroma oddaje meritve.
 
-Cilj projekta je zbrati **prostorske podatke o dejanskem stanju kolesarskih poti**, ki jih v uradnih evidencah pogosto ni ali pa ne odražajo izkušenj kolesarjev v praksi.
+V projektu Kolesarske raziskujemo vibracijski odziv med vožnjo po kolesarskih površinah v Ljubljani. Prostovoljci s telefonom beležijo pospeške in lokacijo. Njihove meritve bomo v magistrskem delu primerjali z referenčnimi vožnjami, posnetimi z vedno istim kolesom in telefonom.
 
-Projekt poteka v sklopu **magistrskega dela v nastajanju na Oddelku za geografijo Filozofske fakultete Univerze v Ljubljani**.
+Raziskavo vodi **Jaka Grad** v okviru magistrskega dela **Ocena udobnosti kolesarskih poti v Ljubljani** na Oddelku za geografijo Filozofske fakultete Univerze v Ljubljani. Mentor je **Blaž Repe**.
 
----
+## Pred prvim sodelovanjem
 
-# O projektu
+1. Piši na **[jaka.grad1@gmail.com](mailto:jaka.grad1@gmail.com)** in povej, da želiš sodelovati v pilotu.
+2. Navedi model telefona, operacijski sistem, vrsto kolesa in držala. Raziskovalec se s tabo dogovori o merilni postavitvi ter označevanju tvojih voženj.
+3. Pred meritvijo se seznani z namenom zbiranja lokacijskih in senzorskih podatkov ter z raziskovalčevimi informacijami o dostopu, hrambi in ravnanju s podatki. Če teh informacij še nisi prejel, jih najprej zahtevaj.
+4. Meritev začni po potrditvi vključitve in prejemu veljavnih navodil za pilot.
 
-Kakovost kolesarskih površin pomembno vpliva na:
-- udobje in varnost kolesarjev,
-- izbiro poti,
-- rabo kolesa kot vsakodnevnega prevoznega sredstva.
+**Za vprašanja in testne oddaje uporabljamo isti naslov: jaka.grad1@gmail.com.** Pred javnim zbiranjem bo objavljen projektni naslov. Zasebni register sodelujočih ni del javne karte; neprepoznana oddaja se ne vključi samodejno v javne rezultate.
 
-V Sloveniji (in širše) nimamo sistematičnih, prostorsko podrobnih podatkov o **dejanski gladkosti kolesarskih poti**. Uradne evidence večinoma beležijo obstoj infrastrukture, ne pa njene uporabniške kakovosti.
+## Kaj potrebuješ
 
-Projekt **Kolesarske** želi to vrzel zapolniti s pomočjo **participativnega (občanskega) zbiranja podatkov**. Kolesarji s pametnim telefonom med vožnjo beležijo vibracije, GPS lokacijo in druge osnovne podatke, iz katerih je mogoče oceniti kakovost podlage.
+- Pametni telefon z aplikacijo **phyphox** (Android ali iPhone).
+- **Fiksno držalo za telefon**, ki se med vožnjo ne premika; ustreznost postavitve potrdiš z raziskovalcem.
+- Kolo, primerno za dogovorjeni protokol: brez vzmetenja ali z možnostjo dogovorjenega zaklepa. Če nisi prepričan, to razjasni pred meritvijo.
 
-Zbrani podatki bodo uporabljeni:
-- za analizo prostorskih vzorcev kakovosti kolesarskih poti,
-- za razvoj metod merjenja s pametnimi telefoni,
-- kot podlaga za magistrsko delo in nadaljnje raziskave.
+## Pripravi aplikacijo in telefon
 
----
+1. Namesti phyphox iz uradnega vira: [Android — Google Play](https://play.google.com/store/apps/details?id=de.rwth_aachen.phyphox), [iPhone — App Store](https://apps.apple.com/us/app/phyphox/id1127319693) ali [F-Droid](https://f-droid.org/packages/de.rwth_aachen.phyphox/). Podprto različico sistema preveri pri izbranem viru aplikacije.
+2. V aplikacijo uvozi raziskovalni eksperiment **Kolesarske_3**. Če QR bereš na drugem zaslonu, v phyphox izberi dodajanje eksperimenta iz QR kode in ga shrani v zbirko.
 
-# <div id="mapMount"></div>
+![QR koda raziskovalnega eksperimenta](slike/Kolesarske3_QR.png)
 
----
+Če stran bereš na istem telefonu, lahko [preneseš datoteko eksperimenta Kolesarske_3](data/testphy.phyphox) in jo odpreš s phyphox. Če datoteke ne moreš uvoziti ali dobiš drugo ime eksperimenta, pred meritvijo piši raziskovalcu. Postopek uvoza se med različicami telefona lahko razlikuje.
 
-# Zakaj sodelovati?
+3. Preveri, da je ime v zbirki eksperimentov **Kolesarske_3**. Podatke iz drugega eksperimenta pošlji le po dogovoru.
+4. Telefon pritrdi vodoravno, z zgornjim robom v smeri vožnje, in preveri stabilnost držala. Končno postavitev uskladi z raziskovalcem. Fotografija dogovorjene namestitve bo dodana po preverjanju opreme v pilotu.
+5. Preveri in ločeno zabeleži tlak sprednje in zadnje pnevmatike; ni zahteve, da sta enaka. Zabeleži tudi morebitno spremembo kolesa, telefona ali držala glede na dogovorjeno postavitev.
 
-S sodelovanjem v projektu:
+## Pred vožnjo in med meritvijo
 
-- **prispevaš k boljšemu razumevanju stanja kolesarske infrastrukture**,  
-- pomagaš razvijati **odprte, ponovljive metode merjenja**,  
-- sodeluješ pri **akademskem raziskovalnem delu**,  
-- zastopaš perspektivo dejanskega uporabnika kolesarskih poti.
+- Ob varnem postanku vklopi lokacijo in omogoči dovoljenja, ki jih phyphox potrebuje za ta eksperiment. Preveri, da varčevanje z baterijo ne prekinja dogovorjenega zajema.
+- Odpri **Kolesarske_3**, zaženi meritev in pred odhodom preveri, da se podatki zapisujejo. Med pilotom upoštevaj navodilo, da zaslon ostane odklenjen; svetlost lahko zmanjšaš.
+- Kolesari po dogovorjeni poti in upoštevaj prometna pravila. **Med vožnjo ne upravljaj telefona. Meritev preveri samo ob varnem postanku.**
+- Ob običajnem kratkem postanku, na primer pri semaforju, meritve ni treba ustaviti. Če se zajem prekine ali opremo premakneš, to zabeleži v sporočilu ob oddaji.
+- Po koncu vožnje se varno ustavi in nato ustavi eksperiment.
 
-Projekt temelji na predpostavki, da imajo kolesarji **najboljši vpogled v realno stanje poti**, saj jih uporabljajo vsak dan. Uporabnost rezultatov bomo preverjali glede na ponovitve, merilno opremo in prostorsko pokritost.
+## Izvozi in oddaj meritev
 
-Sodelovanje je prostovoljno, odprto in ne zahteva posebnega tehničnega znanja.
+1. V phyphox izberi izvoz podatkov v obliki **CSV**. Za ta eksperiment potrebujemo **ZIP z vsemi izvoženimi CSV-ji**, ne posnetka zaslona ali ene same tabele.
+2. ZIP naj vsebuje **`Accelerometer.csv`, `Location.csv`, `Linear Accelerometer.csv`**. Datotek v arhivu ne preimenuj in jih ne urejaj ročno.
+3. Ime priponke mora za trenutni testni sprejemnik vsebovati **measurement**, na primer **measurement_Kolesarske_3.zip**. Po potrebi spremeni samo ime ZIP-a; priponke ne razpakiraj in je ne zamenjaj z drugimi podatki.
+4. Uporabi deljenje v phyphox oziroma priloži ZIP v e-poštnem programu. Pošlji ga na **[jaka.grad1@gmail.com](mailto:jaka.grad1@gmail.com)**. Pred pošiljanjem preveri prejemnika in prisotnost priponke.
+5. V sporočilu navedi dogovorjeno oznako sodelujočega oziroma podatke za prepoznavo tvoje oddaje, merilno postavitev in morebitne prekinitve ali spremembe. E-poštnega naslova ne uporabljamo kot javne oznake na karti.
 
----
+**Odprtje povezave za e-pošto ne priloži ZIP-a in ne potrdi prejema.** Če je bila priponka zavrnjena, je ne moreš izvoziti ali nisi prepričan, ali je prispela, piši raziskovalcu. Podatkov ti ni treba objavljati na GitHubu ali drugem javnem mestu.
 
-# Kako lahko sodelujem?
+## Kaj se zgodi po oddaji
 
-Sodelovanje je preprosto:
-1. Na kolo namestiš telefon.
-2. Med običajno vožnjo po kolesarskih poteh izvedeš meritev.
-3. Po vožnji pošlješ podatke raziskovalni ekipi.
+- **Prejem in pregled:** raziskovalec v pilotu preveri oddajo, prepoznavo sodelujočega in uporabnost zapisa. Samodejna potrditev prejema in rok obdelave še nista potrjeni storitvi.
+- **Povratna informacija:** za pilot se z raziskovalcem dogovoriš o povratni informaciji in zasebnem poročilu. Stran trenutno ne obljublja samodejne dostave ali dostave v določenem številu ur.
+- **Neuporaben ali delno uporaben zapis:** pred ponovitvijo razjasnimo razlog, na primer prekinitev zajema ali manjkajoče datoteke. En neuspel zapis ne pomeni, da ne moreš sodelovati.
+- **Skupni rezultati:** primerne meritve prostovoljcev se vključujejo v agregate po pravilih raziskave. Posamezen prispevek zato ni nujno takoj viden na javni karti; razlog je lahko premalo podatkov za objavo ali še neizvedena posodobitev.
 
-Meritev lahko izvedeš **kadar koli**, na **svoji običajni poti** (npr. v službo, šolo, na rekreacijo).
+Za vprašanja o prejemu ali nadaljevanju sodelovanja piši na **[jaka.grad1@gmail.com](mailto:jaka.grad1@gmail.com)**.
 
----
+## Skupni rezultati raziskave
 
-# Navodila za sodelovanje
+Javna karta je namenjena **agregiranim meritvam prostovoljcev**. Referenčne vožnje z vedno istim kolesom in telefonom ostanejo v zasebni analitični zbirki. Na javni karti ne prikazujemo posamezne časovno urejene vožnje ali identitete sodelujočega.
 
-Spodaj so natančna navodila za izvedbo meritev. Prosimo, da se jih čim bolj držiš – s tem zagotoviš primerljivost podatkov.
+Vrednosti opisujejo **vibracijski odziv**, ne potrjene prometne varnosti. Večji odziv sam po sebi ne dokazuje poškodbe površine ali enakega doživetja pri vseh kolesarjih. Razredi so relativni prikazani izdaji; pred prvimi ustreznimi prostovoljskimi agregati je karta prazna.
 
-## Obvezna oprema
+<div id="mapMount"></div>
 
-- Kolo **brez vzmetenja** ali z možnostjo **zaklepa vzmetenja** (sprednjega in/ali zadnjega).
-- **Fiksno držalo za telefon** (kovinsko ali iz trde plastike; ne elastično).
-- **Pametni telefon**:
-  - Android ali iPhone.
+## O raziskavi in pomoč
 
----
+Primerjava referenčnih in prostovoljskih meritev bo del magistrske naloge. Trenutni pilot vključuje senzorske meritve in terenski popis, ne uporabniških ocen zaznanega udobja. Sodelovanje je prostovoljno; pred prvo meritvijo razjasni vprašanja o postopku in podatkih z raziskovalcem.
 
-## Predpriprava
+Kontakt: **[jaka.grad1@gmail.com](mailto:jaka.grad1@gmail.com)**.
 
-- Na telefon namesti aplikacijo **phyphox**:  
-  - [iOS](https://apps.apple.com/us/app/phyphox/id1127319693)  
-  - [Android](https://play.google.com/store/apps/details?id=de.rwth_aachen.phyphox)  
-  - [F-Droid](https://f-droid.org/packages/de.rwth_aachen.phyphox/)  
-  - podprto različico sistema preveri pri izbranem uradnem viru aplikacije.
-
-- Ob prvem zagonu aplikaciji dovoli dostop do vseh senzorjev.
-
-- V aplikaciji phyphox:
-  - klikni **+** → *Add experiment from QR code*,
-  - skeniraj QR kodo,
-  - izberi *Save to collection*.
-
-S tem shraniš prednastavljen eksperiment **Kolesarske_3**.
-
-![QR koda eksperimenta](slike/Kolesarske3_QR.png)
-
-- Telefon namesti na krmilo kolesa, kot kaže slika. Držalo mora biti nameščeno **vodoravno**, torej vzporedno s tlemi.
-
-  Za preverjanje vodoravnosti lahko uporabiš:
-  - [iOS – Measure](https://apps.apple.com/us/app/measure/id1383426740)
-  - [Android – Bubble level](https://play.google.com/store/apps/details?id=net.androgames.level)
-  - [F-Droid – Bubble](https://f-droid.org/packages/org.woheller69.level/)
-
-- Preveri tlak v obeh zračnicah:
-  - tlak naj ustreza vrednostim, označenim na plaščih,
-  - tlak sprednje in zadnje pnevmatike zabeleži ločeno; ni zahteve, da sta enaka.
-
----
-
-## Potek meritve
-
-- Če ima kolo vzmetenje, ga **zakleni**.
-- Na telefonu:
-  - izklopi varčevanje z baterijo,
-  - vklopi lokacijo/GPS.
-
-- Odpri phyphox, poišči eksperiment **Kolesarske_3** in ga zaženi s klikom na puščico.
-- **Ne zakleni zaslona** (lahko znižaš svetlost).
-- Začni s kolesarjenjem.
-
-Med meritvijo:
-- kolesari predvsem po kolesarskih poteh,
-- upoštevaj cestnoprometne predpise,
-- bodi odgovoren in skrbi za svojo ter tujo varnost,
-- meritev preverjaj samo ob varnem postanku; med vožnjo ne upravljaj telefona.
-
-Če se med vožnjo začasno ustaviš (npr. semafor), **ni treba ustaviti meritve**.
-
-Ko končaš s kolesarjenjem:
-- ustavi eksperiment,
-- izberi izvoz **CSV** in pošlji nastali **ZIP** s podatki,
-- podatke pošlji po e-pošti na:  
-  **jaka.grad1(at)gmail.com** (trenutni zaprti test; pred javnim zbiranjem bo objavljen projektni naslov)
-
-V sporočilo lahko dodaš:
-- posebnosti poti,
-- morebitne težave,
-- druge komentarje, ki se ti zdijo pomembni.
-
----
-
-# Viri slik
-
-Slike in grafični materiali so avtorski ali uporabljeni z dovoljenjem in so namenjeni izključno predstavitvi projekta.
-
-
-# Prikaz meritev
-
-Javna karta prikazuje samo agregirane meritve prostovoljcev. Referenčne meritve z vedno istim kolesom in telefonom ostanejo v zasebni raziskovalni zbirki; primerjavo bomo obravnavali v magistrskem delu. Posameznih časovno urejenih sledi ne objavljamo.
-
-Razredi karte so relativni razredi prikazane izdaje. Vrednosti opisujejo vibracijski odziv, ne potrjene prometne varnosti. Pri kazalnikih BRI in FII so uporabljene prilagoditve opisane ob izbiri kazalnika. Pred prvimi ustreznimi prostovoljskimi meritvami je karta prazna.
+Navodila za prenos eksperimentov v aplikacijo: [uradna dokumentacija phyphox](https://phyphox.org/docs/transferring-experiments/).

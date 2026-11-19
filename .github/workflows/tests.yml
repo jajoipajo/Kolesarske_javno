@@ -11,4 +11,5 @@ jobs:
         with:
           node-version: '22'
       - run: node --check main.js
+      - run: node scripts/build_content.cjs --check
       - run: node scripts/test_map.cjs

@@ -127,7 +127,6 @@ function initTopTocToggle() {
   });
 }
 
-const DATA_STATUS_TEXT = "8. 2. 2026 ob 15:49";
 const INDEX_DOC_PATH = "./index_descriptions.md";
 
 function buildMapCard() {
@@ -145,7 +144,7 @@ function buildMapCard() {
         <select id="indexSelect"></select>
       </div>
     </div>
-    <p class="map-note">Povprečne vrednosti do sedaj zbranih meritev (stanje ${DATA_STATUS_TEXT}).</p>
+    <p class="map-note">Agregirani podatki prostovoljcev. V pilotu je prikaz lahko prazen, dokler ni ustreznih podatkov za objavo.</p>
     <div id="map" class="map" role="img" aria-label="Leaflet karta z merilnimi točkami"></div>
     <div class="map-meta">
       <div id="mapLegend" class="map-legend" aria-live="polite"></div>
